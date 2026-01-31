@@ -21,14 +21,30 @@ def parse_polygon_coordinates(coords: list) -> list[tuple[float, float]]:
     """
     Parse GeoJSON polygon coordinates to list of (x, y) tuples.
 
-    GeoJSON polygons have structure: [[[x1,y1], [x2,y2], ...]]
-    The outer list is for multi-polygons, we take the first ring.
+    Handles both Polygon and MultiPolygon geometries:
+    - Polygon: [[[x1,y1], [x2,y2], ...]]
+    - MultiPolygon: [[[[x1,y1], [x2,y2], ...]]]
+
+    For MultiPolygons, only the first polygon's exterior ring is used.
     """
     if not coords or not coords[0]:
         return []
 
-    # Take the exterior ring (first element)
-    exterior_ring = coords[0]
+    # Check if this is a MultiPolygon (coords[0][0] is a list of points)
+    # For Polygon: coords[0][0] = [x, y] (a point)
+    # For MultiPolygon: coords[0][0] = [[x, y], ...] (a ring)
+    first_element = coords[0]
+    if first_element and isinstance(first_element[0], list):
+        # Check if it's a point [x, y] or a ring [[x, y], ...]
+        if first_element[0] and isinstance(first_element[0][0], list):
+            # MultiPolygon: coords[0] is a polygon, coords[0][0] is exterior ring
+            exterior_ring = first_element[0]
+        else:
+            # Polygon: coords[0] is the exterior ring
+            exterior_ring = first_element
+    else:
+        return []
+
     return [(float(pt[0]), float(pt[1])) for pt in exterior_ring]
 
 

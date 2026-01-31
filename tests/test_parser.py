@@ -43,8 +43,8 @@ class TestParsePolygonCoordinates:
         assert parse_polygon_coordinates([]) == []
         assert parse_polygon_coordinates([[]]) == []
 
-    def test_multipolygon_takes_first_ring(self):
-        """Test that only the exterior ring (first element) is used."""
+    def test_polygon_with_hole(self):
+        """Test that only the exterior ring is used, holes are ignored."""
         # Polygon with hole - should only return exterior ring
         coords = [
             [[0, 0], [100, 0], [100, 100], [0, 100], [0, 0]],  # exterior
@@ -54,6 +54,20 @@ class TestParsePolygonCoordinates:
 
         assert len(result) == 5
         assert result[0] == (0.0, 0.0)
+
+    def test_multipolygon_geometry(self):
+        """Test parsing MultiPolygon geometry (nested one level deeper)."""
+        # MultiPolygon structure: [[[[x,y], [x,y], ...]]]
+        coords = [
+            [[[10, 10], [20, 10], [20, 20], [10, 20], [10, 10]]],  # first polygon
+            [[[50, 50], [60, 50], [60, 60], [50, 60], [50, 50]]]   # second polygon (ignored)
+        ]
+        result = parse_polygon_coordinates(coords)
+
+        # Should use first polygon's exterior ring
+        assert len(result) == 5
+        assert result[0] == (10.0, 10.0)
+        assert result[1] == (20.0, 10.0)
 
 
 class TestStreamCellGeometries:
