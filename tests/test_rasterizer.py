@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from segmentation_mask_maker.parser import CellGeometry
-from segmentation_mask_maker.rasterizer import (
+from geojson2masks.parser import CellGeometry
+from geojson2masks.rasterizer import (
     polygon_to_pixel_coords,
     create_label_masks,
     determine_optimal_dtype,

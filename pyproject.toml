@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "segmentation-mask-maker"
+name = "geojson2masks"
 version = "0.1.0"
 description = "Convert QuPath GeoJSON segmentation exports to label mask images"
 readme = "README.md"
@@ -27,7 +27,7 @@ dev = [
 ]
 
 [project.scripts]
-geojson2masks = "segmentation_mask_maker.cli:main"
+geojson2masks = "geojson2masks.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

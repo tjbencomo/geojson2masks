@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import tifffile
 
-from segmentation_mask_maker.cli import main, parse_args
+from geojson2masks.cli import main, parse_args
 
 
 class TestParseArgs:

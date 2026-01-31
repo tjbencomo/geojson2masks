@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from segmentation_mask_maker.parser import (
+from geojson2masks.parser import (
     parse_polygon_coordinates,
     stream_cell_geometries,
     count_cells,
