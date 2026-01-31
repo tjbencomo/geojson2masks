@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "segmentation-mask-maker"
+version = "0.1.0"
+description = "Convert QuPath GeoJSON segmentation exports to label mask images"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+dependencies = [
+    "numpy>=1.21.0",
+    "ijson>=3.2.0",
+    "tifffile>=2023.1.0",
+    "opencv-python-headless>=4.5.0",
+    "tqdm>=4.64.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+geojson2masks = "segmentation_mask_maker.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
