@@ -5,6 +5,7 @@ Converts QuPath GeoJSON segmentation exports to label mask images.
 """
 
 import argparse
+import csv
 import sys
 from pathlib import Path
 
@@ -12,7 +13,7 @@ import numpy as np
 import tifffile
 from tqdm import tqdm
 
-from .parser import stream_cell_geometries, count_cells
+from .parser import stream_cell_geometries, count_cells, CellGeometry
 from .rasterizer import create_label_masks, convert_mask_dtype
 
 
@@ -106,12 +107,14 @@ def main(args: list[str] | None = None) -> int:
     base_name = parsed.input.stem
     cell_mask_path = output_dir / f"{base_name}{parsed.cell_suffix}.tif"
     nucleus_mask_path = output_dir / f"{base_name}{parsed.nucleus_suffix}.tif"
+    id_mapping_path = output_dir / f"{base_name}_id_mapping.csv"
 
     if not parsed.quiet:
         print(f"Input: {parsed.input}")
         print(f"Output dimensions: {parsed.width} x {parsed.height}")
         print(f"Cell mask: {cell_mask_path}")
         print(f"Nucleus mask: {nucleus_mask_path}")
+        print(f"ID mapping: {id_mapping_path}")
         print()
 
     # Count cells for progress bar
@@ -134,13 +137,21 @@ def main(args: list[str] | None = None) -> int:
         pbar = None
         progress_callback = None
 
-    # Stream and rasterize
+    # Stream and rasterize, capturing ID mapping as cells are consumed
     if not parsed.quiet:
         print("Creating label masks...")
 
+    id_mapping: list[tuple[int, str]] = []
+
+    def capture_id_mapping(cell_geometries):
+        for cell in cell_geometries:
+            geojson_id = cell.geojson_id if cell.geojson_id is not None else ""
+            id_mapping.append((cell.cell_id, geojson_id))
+            yield cell
+
     cell_geometries = stream_cell_geometries(str(parsed.input))
     cell_mask, nucleus_mask = create_label_masks(
-        cell_geometries,
+        capture_id_mapping(cell_geometries),
         width=parsed.width,
         height=parsed.height,
         total_cells=total_cells,
@@ -182,11 +193,20 @@ def main(args: list[str] | None = None) -> int:
         photometric='minisblack'
     )
 
+    # Save ID mapping
+    if not parsed.quiet:
+        print(f"Saving ID mapping to {id_mapping_path}...")
+    with open(id_mapping_path, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['mask_id', 'geojson_id'])
+        writer.writerows(id_mapping)
+
     if not parsed.quiet:
         print()
         print("Done!")
         print(f"  Cell mask: {cell_mask_path} ({cell_mask_path.stat().st_size / 1024 / 1024:.1f} MB)")
         print(f"  Nucleus mask: {nucleus_mask_path} ({nucleus_mask_path.stat().st_size / 1024 / 1024:.1f} MB)")
+        print(f"  ID mapping: {id_mapping_path} ({len(id_mapping)} entries)")
 
     return 0
 

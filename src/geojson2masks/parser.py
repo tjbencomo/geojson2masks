@@ -13,6 +13,7 @@ from dataclasses import dataclass
 class CellGeometry:
     """Container for a single cell's geometry data."""
     cell_id: int
+    geojson_id: Optional[str]
     cell_polygon: list[tuple[float, float]]
     nucleus_polygon: Optional[list[tuple[float, float]]]
 
@@ -87,13 +88,34 @@ def stream_cell_geometries(geojson_path: str) -> Iterator[CellGeometry]:
             nucleus_coords = nucleus_geometry.get('coordinates', [])
             nucleus_polygon = parse_polygon_coordinates(nucleus_coords) if nucleus_coords else None
 
+            # Extract GeoJSON feature id (may not exist)
+            geojson_id = feature.get('id')
+
             yield CellGeometry(
                 cell_id=cell_id,
+                geojson_id=geojson_id,
                 cell_polygon=cell_polygon,
                 nucleus_polygon=nucleus_polygon
             )
 
             cell_id += 1
+
+
+def build_id_mapping(cell_geometries: Iterator[CellGeometry]) -> list[tuple[int, str]]:
+    """
+    Build a mapping from label mask cell IDs to GeoJSON feature IDs.
+
+    Args:
+        cell_geometries: Iterator of CellGeometry objects
+
+    Returns:
+        List of (mask_cell_id, geojson_id) tuples
+    """
+    mapping = []
+    for cell in cell_geometries:
+        geojson_id = cell.geojson_id if cell.geojson_id is not None else ""
+        mapping.append((cell.cell_id, geojson_id))
+    return mapping
 
 
 def count_cells(geojson_path: str) -> int:

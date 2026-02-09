@@ -52,6 +52,7 @@ class TestCreateLabelMasks:
         cells = [
             CellGeometry(
                 cell_id=1,
+                geojson_id=None,
                 cell_polygon=[(10, 10), (20, 10), (20, 20), (10, 20), (10, 10)],
                 nucleus_polygon=[(12, 12), (18, 12), (18, 18), (12, 18), (12, 12)]
             )
@@ -69,11 +70,13 @@ class TestCreateLabelMasks:
         cells = [
             CellGeometry(
                 cell_id=1,
+                geojson_id=None,
                 cell_polygon=[(5, 5), (15, 5), (15, 15), (5, 15), (5, 5)],
                 nucleus_polygon=[(7, 7), (13, 7), (13, 13), (7, 13), (7, 7)]
             ),
             CellGeometry(
                 cell_id=2,
+                geojson_id=None,
                 cell_polygon=[(25, 25), (35, 25), (35, 35), (25, 35), (25, 25)],
                 nucleus_polygon=[(27, 27), (33, 27), (33, 33), (27, 33), (27, 27)]
             )
@@ -98,6 +101,7 @@ class TestCreateLabelMasks:
         cells = [
             CellGeometry(
                 cell_id=1,
+                geojson_id=None,
                 cell_polygon=[(10, 10), (20, 10), (20, 20), (10, 20), (10, 10)],
                 nucleus_polygon=None
             )
@@ -117,6 +121,7 @@ class TestCreateLabelMasks:
         cells = [
             CellGeometry(
                 cell_id=i,
+                geojson_id=None,
                 cell_polygon=[(0, 0), (5, 0), (5, 5), (0, 5), (0, 0)],
                 nucleus_polygon=None
             )
@@ -144,6 +149,7 @@ class TestCreateLabelMasks:
         cells = [
             CellGeometry(
                 cell_id=1,
+                geojson_id=None,
                 cell_polygon=[(10, 10), (20, 10), (20, 20), (10, 20), (10, 10)],
                 nucleus_polygon=[(12, 12), (18, 12), (18, 18), (12, 18), (12, 12)]
             )
@@ -159,6 +165,7 @@ class TestCreateLabelMasks:
         cells = [
             CellGeometry(
                 cell_id=100000,
+                geojson_id=None,
                 cell_polygon=[(10, 10), (20, 10), (20, 20), (10, 20), (10, 10)],
                 nucleus_polygon=[(12, 12), (18, 12), (18, 18), (12, 18), (12, 12)]
             )
@@ -174,11 +181,13 @@ class TestCreateLabelMasks:
         cells = [
             CellGeometry(
                 cell_id=1,
+                geojson_id=None,
                 cell_polygon=[(10, 10), (30, 10), (30, 30), (10, 30), (10, 10)],
                 nucleus_polygon=None
             ),
             CellGeometry(
                 cell_id=2,
+                geojson_id=None,
                 cell_polygon=[(20, 20), (40, 20), (40, 40), (20, 40), (20, 40)],
                 nucleus_polygon=None
             )
