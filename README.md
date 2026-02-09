@@ -37,9 +37,10 @@ pip install -e .
 geojson2masks input.geojson --width 20000 --height 20000
 ```
 
-This creates two TIFF files in the same directory as the input:
+This creates three files in the same directory as the input:
 - `input_cell_mask.tif` - Label mask for whole cell segmentations
 - `input_nucleus_mask.tif` - Label mask for nuclear segmentations
+- `input_id_mapping.csv` - Mapping from mask cell IDs to GeoJSON feature IDs
 
 ### Options
 
@@ -84,6 +85,7 @@ geojson2masks input.geojson -W 20000 -H 20000 --no-compress
   - uint16 for ≤65,535 cells
   - uint32 for larger datasets
 - **Cell IDs**: 1-indexed (0 = background), consistent between cell and nucleus masks
+- **ID mapping**: CSV file with columns `mask_id` and `geojson_id`, linking each label mask integer ID to the original GeoJSON feature `id` (typically a UUID assigned by QuPath)
 
 ## Running Tests
 
